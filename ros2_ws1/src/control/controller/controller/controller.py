@@ -2,6 +2,7 @@ import rclpy
 from rclpy.node import Node
 import yaml
 from turtlesim.srv import Spawn
+import math
 
 
 class Controller(Node):
@@ -22,6 +23,14 @@ class Controller(Node):
         self.robo_req.theta = 0.0
         self.robo_req.name = "robot1"
 
+        self.target_id = 0
+        self.thres = 0.2
+
+        self.x = 0.0
+        self.y = 0.0
+        self.goal_x = 0.0
+        self.goal_y = 0.0
+
         future = self.robo.call_async(self.robo_req)
         rclpy.spin_until_future_complete(self, future)
 
@@ -31,6 +40,10 @@ class Controller(Node):
             self.get_logger().error("Failed to spawn turtle")
 
         self.load_waypoints()
+
+        if self.waypoints:
+            self.goal_x = self.waypoints[0]['x']
+            self.goal_y = self.waypoints[0]['y']
 
 
     def spawn_turtle(self, x, y):
@@ -71,12 +84,19 @@ class Controller(Node):
             self.waypoints = []
 
 
+    def check(self):
+        distance=math.sqrt(math.pow((self.x-self.goal_x),2)+math.pow((self.y-self.goal_y),2))
+        if distance <= self.thres:
+            self.get_logger().info(f"Reached target = {self.goal_x},{self.goal_y}")
+
+
 def main(args=None):
     rclpy.init(args=args)
     node = Controller()
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()
+
 
 if __name__ == '__main__':
     main()
