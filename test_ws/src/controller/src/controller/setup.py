@@ -1,6 +1,8 @@
 from setuptools import find_packages, setup
 
-package_name = 'simulator'
+package_name = 'controller'
+from glob import glob
+
 
 setup(
     name=package_name,
@@ -10,11 +12,15 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
+        ('share/ament_index/resource_index/packages',
+        ['resource/' + package_name]),
+    ('share/' + package_name, ['package.xml']),
+    ('share/' + package_name + '/launch', glob('launch/*.py')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
     maintainer='w1dow',
-    maintainer_email='w1dow@todo.todo',
+    maintainer_email='avinashwrk1306@gmail.com',
     description='TODO: Package description',
     license='TODO: License declaration',
     extras_require={
@@ -24,7 +30,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            "simulator=simulator.simulator:main"
+            "control=controller.test:main"
         ],
     },
 )
